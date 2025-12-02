@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RendaIA - Análise Automática de Renda com Inteligência Artificial</title>
+    <meta name="description" content="Transforme 3 horas de análise manual em 2 minutos automatizados. Sistema com IA para análise de extratos bancários e comprovação de renda.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--white);
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero .subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Stats Section */
+        .stats {
+            background: var(--white);
+            padding: 60px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 30px;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 18px;
+            color: var(--gray);
+        }
+        
+        /* Problem/Solution Section */
+        .problem {
+            background: var(--light-gray);
+            padding: 80px 0;
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .problem h2, .solution h2 {
+            font-size: 42px;
+            margin-bottom: 30px;
+            color: var(--dark);
+        }
+        
+        .problem-list, .solution-list {
+            list-style: none;
+        }
+        
+        .problem-list li {
+            padding: 15px 0;
+            padding-left: 40px;
+            position: relative;
+            font-size: 18px;
+        }
+        
+        .problem-list li::before {
+            content: '❌';
+            position: absolute;
+            left: 0;
+            font-size: 24px;
+        }
+        
+        .solution-list li::before {
+            content: '✅';
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 60px;
+            color: var(--dark);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            background: var(--light-gray);
+            padding: 80px 0;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 15px;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .step h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        /* Pricing */
+        .pricing {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .pricing-card {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .plan-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .plan-price {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+        
+        .plan-price span {
+            font-size: 18px;
+            color: var(--gray);
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .plan-features li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            background: var(--light-gray);
+            padding: 80px 0;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .testimonial-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .author-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+        
+        .cta p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+        
+        /* Lead Form */
+        .lead-form {
+            background: var(--white);
+            padding: 80px 0;
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--light-gray);
+            padding: 40px;
+            border-radius: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: var(--white);
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        footer p {
+            opacity: 0.8;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero .subtitle {
+                font-size: 18px;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .problem-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">🚀 RendaIA</div>
+            <ul class="nav-links">
+                <li><a href="#features">Recursos</a></li>
+                <li><a href="#how-it-works">Como Funciona</a></li>
+                <li><a href="#pricing">Preços</a></li>
+                <li><a href="#beta">Seja Beta Tester</a></li>
+            </ul>
+            <a href="#beta" class="btn btn-primary">Começar Agora</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="badge">🎉 LANÇAMENTO - APENAS 30 VAGAS PARA BETA TESTERS</div>
+            <h1>Análise de Renda em<br>2 Minutos com IA</h1>
+            <p class="subtitle">Transforme 3 horas de trabalho manual em 2 minutos automatizados.<br>Sistema com Inteligência Artificial para análise de extratos bancários.</p>
+            <div class="hero-buttons">
+                <a href="#beta" class="btn btn-primary">Quero Ser Beta Tester (30 Dias Grátis)</a>
+                <a href="#how-it-works" class="btn btn-secondary">Ver Como Funciona</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Redução de Tempo</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">99.5%</div>
+                    <div class="stat-label">Taxa de Precisão</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2 min</div>
+                    <div class="stat-label">Tempo de Análise</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">R$ 0</div>
+                    <div class="stat-label">Instalação Necessária</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem/Solution -->
+    <section class="problem">
+        <div class="container">
+            <div class="problem-grid">
+                <div>
+                    <h2>😫 O Problema que Você Enfrenta:</h2>
+                    <ul class="problem-list">
+                        <li>2-3 horas analisando cada extrato manualmente</li>
+                        <li>Erros de cálculo frequentes</li>
+                        <li>Impossível escalar o time</li>
+                        <li>Clientes impacientes esperando</li>
+                        <li>Corretor desperdiçando tempo com planilhas</li>
+                        <li>Risco de contar transferências de família</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>✨ A Solução RendaIA:</h2>
+                    <ul class="problem-list solution-list">
+                        <li>2 minutos de análise automática</li>
+                        <li>99.5% de precisão garantida</li>
+                        <li>Escala para 100+ análises/dia</li>
+                        <li>Resposta instantânea ao cliente</li>
+                        <li>Corretor foca em vender</li>
+                        <li>Filtro automático de família</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">🎯 Recursos Poderosos</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Inteligência Artificial</h3>
+                    <p>IA de última geração analisa extratos com precisão superior a humanos. Aprende e melhora continuamente.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📤</div>
+                    <h3>Upload Múltiplo</h3>
+                    <p>Envie até 6 arquivos (PDF ou imagem) de uma vez. Sistema processa todos automaticamente.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Filtro de Família</h3>
+                    <p>Detecta e remove automaticamente transferências entre familiares. Renda real sem inflação artificial.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Excel Profissional</h3>
+                    <p>Relatório formatado e pronto para entregar ao banco. Impressiona na hora da aprovação.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Ultra Robusto</h3>
+                    <p>6 camadas de proteção. Continua funcionando mesmo se 1 arquivo falhar. 99.5% de taxa de sucesso.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Zero Instalação</h3>
+                    <p>Funciona direto no navegador. Link único para toda equipe. Acesse de qualquer lugar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">⚙️ Como Funciona</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Preenche Dados</h3>
+                    <p>Nome do cliente e banco. Sistema detecta sobrenome automaticamente.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Upload Extratos</h3>
+                    <p>Arrasta os PDFs ou imagens. Até 6 arquivos de uma vez.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>IA Analisa</h3>
+                    <p>Sistema processa em 2 minutos. Identifica todas as entradas válidas.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Excel Pronto</h3>
+                    <p>Baixa relatório profissional. Entrega ao cliente ou banco.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">💰 Planos e Preços</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="plan-name">FREE</div>
+                    <div class="plan-price">R$ 0<span>/mês</span></div>
+                    <ul class="plan-features">
+                        <li>3 análises por mês</li>
+                        <li>Upload múltiplo</li>
+                        <li>Filtro de família</li>
+                        <li>Excel com marca d'água</li>
+                        <li>Suporte por email</li>
+                    </ul>
+                    <a href="#beta" class="btn btn-secondary">Começar Grátis</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="badge" style="background: var(--primary); color: white;">🔥 MAIS POPULAR</div>
+                    <div class="plan-name">PRO</div>
+                    <div class="plan-price">R$ 97<span>/mês</span></div>
+                    <ul class="plan-features">
+                        <li>Análises ilimitadas</li>
+                        <li>Sem marca d'água</li>
+                        <li>Dashboard de métricas</li>
+                        <li>Histórico completo</li>
+                        <li>Suporte prioritário</li>
+                        <li>Atualizações automáticas</li>
+                    </ul>
+                    <a href="#beta" class="btn btn-primary">Quero o PRO</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="plan-name">ENTERPRISE</div>
+                    <div class="plan-price">R$ 297<span>/mês</span></div>
+                    <ul class="plan-features">
+                        <li>Tudo do PRO +</li>
+                        <li>Whitelabel (sua marca)</li>
+                        <li>API para integração</li>
+                        <li>Até 50 usuários</li>
+                        <li>Domínio próprio</li>
+                        <li>Gerente de conta dedicado</li>
+                    </ul>
+                    <a href="#beta" class="btn btn-secondary">Falar com Vendas</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">⭐ O Que Dizem Nossos Usuários</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Economizamos 15 horas por semana! Agora consigo focar em vender ao invés de ficar calculando extratos. Ferramenta revolucionária!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div class="author-info">
+                            <h4>Magalhães Negócios</h4>
+                            <p>Porto Alegre, RS</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Antes gastava 3 horas por análise. Agora são 2 minutos! Meu time de 15 corretores está muito mais produtivo. ROI absurdo!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">C</div>
+                        <div class="author-info">
+                            <h4>Carlos Silva</h4>
+                            <p>Corretor Líder</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"O filtro automático de família é genial! Evita erros que antes custavam aprovações negadas. Sistema profissional de verdade."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">A</div>
+                        <div class="author-info">
+                            <h4>Ana Rodrigues</h4>
+                            <p>Gerente Comercial</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <h2>Pronto para Transformar Seu Negócio?</h2>
+            <p>Junte-se aos primeiros 30 beta testers e ganhe 30 dias GRÁTIS do plano PRO!</p>
+            <a href="#beta" class="btn" style="background: white; color: var(--primary);">Quero Ser Beta Tester Agora</a>
+        </div>
+    </section>
+
+    <!-- Lead Form -->
+    <section class="lead-form" id="beta">
+        <div class="container">
+            <h2 class="section-title">🎁 Seja um dos 30 Beta Testers</h2>
+            <div class="form-container">
+                <form id="betaForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                    <div class="form-group">
+                        <label>Nome Completo *</label>
+                        <input type="text" name="nome" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Telefone (WhatsApp) *</label>
+                        <input type="tel" name="telefone" required placeholder="(00) 00000-0000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nome da Imobiliária *</label>
+                        <input type="text" name="imobiliaria" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Cidade/Estado *</label>
+                        <input type="text" name="cidade" required placeholder="Ex: Porto Alegre/RS">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Quantos corretores na sua equipe? *</label>
+                        <select name="tamanho_equipe" required>
+                            <option value="">Selecione...</option>
+                            <option value="1-5">1-5 corretores</option>
+                            <option value="6-15">6-15 corretores</option>
+                            <option value="16-30">16-30 corretores</option>
+                            <option value="31+">31+ corretores</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Quanto você pagaria por mês? *</label>
+                        <select name="preco_ideal" required>
+                            <option value="">Selecione...</option>
+                            <option value="47">R$ 47/mês</option>
+                            <option value="97">R$ 97/mês</option>
+                            <option value="197">R$ 197/mês</option>
+                            <option value="297+">R$ 297+/mês</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 18px; padding: 15px;">
+                        🚀 Quero Ser Beta Tester (30 Dias Grátis!)
+                    </button>
+                    
+                    <p style="text-align: center; margin-top: 20px; font-size: 14px; color: var(--gray);">
+                        ⚡ Apenas 30 vagas • ✅ Sem cartão de crédito • 🎁 30 dias grátis garantidos
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 RendaIA - Todos os direitos reservados</p>
+            <p style="margin-top: 10px;">Desenvolvido com ❤️ por Magalhães Negócios</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('betaForm').addEventListener('submit', function(e) {
+            // Formspree will handle the submission
+            // You can add custom success message here
+            setTimeout(function() {
+                alert('🎉 Obrigado! Você está na lista de espera. Te enviaremos um email em breve com mais detalhes!');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
